@@ -1,0 +1,13 @@
+DJANGO_DEBUG=True
+DATABASE_URL=sqlite:///db.sqlite3
+#DATABASE_URL=postgres://postgres:postgres@db:5432/postgres  # when using PostgreSQL via docker-compose
+TELEGRAM_TOKEN=1725447442:testAATIAicSdePAxSxTHdbO1X_4hfAnONOyiA
+
+CERT_FILE = ''
+CERT_KEY_FILE = ''
+
+# gitlab.com
+ACCESS_TOKEN = '<ACCESS_TOKEN>'
+GRAPHQL_URL = 'https://gitlab.com/api/graphql'
+GITLAB_URL = 'https://gitlab.com/api/v4/projects/2344904121/issues'
+GITLAB_LABELS = 'Теst'
