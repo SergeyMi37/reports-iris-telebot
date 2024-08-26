@@ -47,11 +47,19 @@ def command_servers(update: Update, context: CallbackContext) -> None:
         #result += key.split("URL_")[1]
         #Загрузить из сервиса результат
         err, resp = get_open(os.environ[key])
-        print(err, resp)
-        icon = "😌" if err.find("_OK")!=-1 else "😡"
-        result += icon + " /server_" + key.split("URL_")[1] + " " + err.split("_")[2] + BR
+        print(type, resp)
+        
+        if err.find("_OK")!=-1:
+           icon = "😌" 
+           msg= f'<b>{resp["server"]}</b> Namespaces: {len(resp["ns"])}'
+        else:
+           icon = "😡"
+           msg = "Нет доступа"
+        #
+        result += f'{icon} /server_{key.split("URL_")[1]} {msg}{BR}'
     upms.reply_text(
             text=result,
+            parse_mode=ParseMode.HTML,
         )
 
 
@@ -66,7 +74,8 @@ def get_open(url: str
         'Accept': 'application/json;odata=verbose',
         }
   auth=(o.username,o.password)
-  _host = o.netloc if o.netloc.find("@")==-1  else  o.netloc.split("@")[-1] #Если не включает @, то взять всю строку, если нет, то Последнее поле по @
+  #Если не включает @, то взять всю строку, если нет, то Последнее поле по @
+  _host = o.netloc if o.netloc.find("@")==-1  else  o.netloc.split("@")[-1] 
   _url = f'{o.scheme}://{_host}{o.path}'
   print(_url,auth)
   try:

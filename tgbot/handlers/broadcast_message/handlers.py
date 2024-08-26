@@ -1,7 +1,7 @@
 import re
 
 import telegram
-from telegram import Update
+from telegram import ParseMode, Update
 from telegram.ext import CallbackContext
 
 from dtb.settings import DEBUG
@@ -14,8 +14,32 @@ from users.tasks import broadcast_message
 from datetime import datetime, timedelta
 from tgbot.handlers.admin.reports_gitlab import put_report, get_tele_command
 import os
-GITLAB_LABELS = os.getenv('GITLAB_LABELS')
 
+def server(update: Update, context: CallbackContext):
+    """ Работа с серверами ИРИС """
+    u = User.get_user(update, context)
+    telecmd, upms = get_tele_command(update)
+    if not u.is_superadmin:
+        upms.reply_text(
+            text="В этом режиме можно работать только после одобрения Администратора",
+        )
+    else:
+        if telecmd == "server":
+            # user typed only command without text for the message.
+            upms.reply_text(
+                text="Команду нужно ввести в правильном формате",
+                parse_mode=telegram.ParseMode.HTML,
+            )
+            return
+        text = f"!!!{upms.text.replace(f'server_', '')}!!!"
+        upms.reply_text(
+          text = text,
+          parse_mode=ParseMode.HTML,
+          disable_web_page_preview=True,
+          )
+
+
+GITLAB_LABELS = os.getenv('GITLAB_LABELS')
 def reports(update: Update, context: CallbackContext):
     """ Reports."""
     telecmd, upms = get_tele_command(update)

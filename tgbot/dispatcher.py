@@ -29,6 +29,10 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
     dp.add_handler(CommandHandler("help", onboarding_handlers.command_help)) 
     dp.add_handler(CommandHandler("servers", servers_iris.command_servers)) 
+    # Сервера ИРИС
+    dp.add_handler(
+        MessageHandler(Filters.regex(rf'^/server(/s)?.*'), broadcast_handlers.server)
+    )
     
     # admin commands
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))
