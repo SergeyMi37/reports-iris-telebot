@@ -19,25 +19,13 @@ def command_help(update: Update, context: CallbackContext) -> None:
         text = static_text.start_created.format(first_name=u.first_name)
     else:
         text = static_text.start_not_created.format(first_name=u.first_name)
-    text += BR+'/start: Кнопки ссылок на проект "Табель"'
-    text += BR+'/daily: Отчет за ЛРПО ежедневный по меткам "Табель"'
-    text += BR+'/yesterday: Отчет за ЛРПО вчерашний по меткам "Табель"'
+    text += BR+'/start: Кнопки ссылок на панель Apptools-Admin'
+    text += BR+'/servers: Смотреть статус всех серверов IRIS'
     text += BR
-    if "Рейтинг" in u.roles or "All" in u.roles:
-        text += BR+'/yesterday_rating: Отчет за вчера по метке "Рейтинг"'
-        text += BR+'/daily_rating: Отчет за сегодня по метке "Рейтинг"'
-        text += BR+'/daily_rating_noname: Отчет ежедневный по метке "Рейтинг" обезличенный'
-        text += BR+'/weekly_rating: Отчет еженедельный по первой части $"'
-    text += BR
+    # Это как пример для разделения по ролям пользователей
     if "ВПР" in u.roles or "All" in u.roles:
         text += BR+'/yesterday_vpr: Отчет за вчера по метке "ВПР"'
-        text += BR+'/daily_vpr: Отчет за сегодня по метке "ВПР"'
-        text += BR+'/daily_vpr_noname: Отчет ежедневный по метке "ВПР" обезличенный'
-        text += BR+'/weekly_vpr: Отчет еженедельный по первой части $'
     text += BR
-    text += BR + reports_wrong_format
-    #text += BR+'/ask_location: Отправить локацию 📍'
-    #text += BR+'/export_users: Экспорт users.csv 👥'
     text += BR+'/help: Перечень команд'
     context.bot.send_message(
         chat_id=u.user_id,

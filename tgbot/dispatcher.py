@@ -14,7 +14,7 @@ from tgbot.handlers.onboarding.manage_data import SECRET_LEVEL_BUTTON
 
 from tgbot.handlers.utils import files, error
 from tgbot.handlers.admin import handlers as admin_handlers
-from tgbot.handlers.admin import reports_gitlab
+from tgbot.handlers.admin import servers_iris
 from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
@@ -28,19 +28,8 @@ def setup_dispatcher(dp):
     # onboarding
     dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
     dp.add_handler(CommandHandler("help", onboarding_handlers.command_help)) 
-    dp.add_handler(CommandHandler("daily", reports_gitlab.command_daily)) 
-    dp.add_handler(CommandHandler("yesterday", reports_gitlab.command_yesterday)) 
-
-    dp.add_handler(CommandHandler("daily_rating_noname", reports_gitlab.command_daily_rating_noname)) 
-    dp.add_handler(CommandHandler("daily_rating", reports_gitlab.command_daily_rating)) 
-    dp.add_handler(CommandHandler("yesterday_rating", reports_gitlab.command_daily_rating)) 
-    dp.add_handler(CommandHandler("weekly_rating", reports_gitlab.command_weekly_rating)) 
-
-    dp.add_handler(CommandHandler("daily_vpr_noname", reports_gitlab.command_daily_rating_noname)) 
-    dp.add_handler(CommandHandler("daily_vpr", reports_gitlab.command_daily_rating)) 
-    dp.add_handler(CommandHandler("yesterday_vpr", reports_gitlab.command_daily_rating)) 
-    dp.add_handler(CommandHandler("weekly_vpr", reports_gitlab.command_weekly_rating)) 
-
+    dp.add_handler(CommandHandler("servers", servers_iris.command_servers)) 
+    
     # admin commands
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))
     dp.add_handler(CommandHandler("stats", admin_handlers.stats))
