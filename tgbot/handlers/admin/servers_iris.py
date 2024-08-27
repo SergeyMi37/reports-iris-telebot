@@ -46,24 +46,24 @@ def command_servers(update: Update, context: CallbackContext) -> None:
         print(key, '=>', os.environ[key])
         #result += key.split("URL_")[1]
         #Загрузить из сервиса результат
-        err, resp = get_open(os.environ[key])
+        err, resp = get_open(os.environ[key]+'1') # 0 - Только статус
         print(type, resp)
         
         if err.find("_OK")!=-1:
-           icon = "😌" 
-           msg= f'<b>{resp["server"]}</b> Namespaces: {len(resp["ns"])}'
+           icon = "😌 /" 
+           count = len(resp["ns"]) if "ns" in resp else 0
+           msg= f'<b>{resp["server"]}</b> Продукций: {count}'
         else:
-           icon = "😡"
+           icon = "😡 "
            msg = "Нет доступа"
         #
-        result += f'{icon} /server_{key.split("URL_")[1]} {msg}{BR}'
+        result += f'{icon}s_{key.split("URL_")[1]} {msg}{BR}'
     upms.reply_text(
             text=result,
             parse_mode=ParseMode.HTML,
         )
 
-
-def get_open(url: str
+def get_open(url: str, timeout:int = 3
         ) -> tuple[int, Any]:
 
   o = urlparse(url)
@@ -77,9 +77,9 @@ def get_open(url: str
   #Если не включает @, то взять всю строку, если нет, то Последнее поле по @
   _host = o.netloc if o.netloc.find("@")==-1  else  o.netloc.split("@")[-1] 
   _url = f'{o.scheme}://{_host}{o.path}'
-  print(_url,auth)
+  print('---',_url,auth)
   try:
-      response = requests.get(_url,verify=False,headers=headers,timeout=1,auth=auth)
+      response = requests.get(_url,verify=False,headers=headers,timeout=timeout,auth=auth)
       if response.status_code == 200:
         answer = json.loads(response.text)
         return "code.CODE_GET_OK", answer
@@ -99,4 +99,62 @@ def get_open(url: str
       'err_message': '{0}:{1}'.format(errno, e.args.__repr__())
     }
     return errno, answer
+
+def command_server(cmd: str) -> None:
+    '''
+    Функция разбора суфикса команды вида "ИмяСервера_ИмяОбласти_1параметр_2параметр"
+    Если "ИмяСервера_SYS__" выводить информацию по журналированияю и дисковому пространству
+    Если "ИмяСервера___" выводить список продукций с количеством ошибок за 1 день
+    Если "ИмяСервера_ИмяОбласти__" выводить список первых 20 ошибок с усеченным текстом
+    '''
+    url = os.getenv(f'url_{cmd.split("_")[0]}')
+    result=''
+    if cmd.split("_")[2]: #если есть параметр 1
+       result +=cmd
+    elif cmd.split("_")[1]: #если есть NameSpace
+       _ns = cmd.split("_")[1] if cmd.split("_")[1].find('-')!=-1 else cmd.split("_")[1].replace("v","-")
+       if _ns=='SYS':
+           _url = url.replace('/products/','/status-journal/10')
+           err, resp = get_open(url=_url,timeout=10)
+           print(type, resp)
+           result +=f'Статус:<b>{resp["status"]}</b>\n'
+           for arr in resp["array"]:
+              ic = arr['icon'] 
+              if ic=='y':
+                ic = "😌"
+              elif ic=='r':
+                ic = "😡"
+              elif ic=='g':
+                ic = "😌"
+              result += f'{ic} {arr["text"]}\n'
+           result += "\n/help /servers /s_"+cmd.split("_")[0]
+           return result
+       _url = url.replace('/products/','/productslist/')+_ns
+       err, resp = get_open(url=_url,timeout=10)
+       result +=f'Сервер: <b>{resp["server"]}</b> Область: <b>{_ns}</b>\n'
+       print(type, resp)
+       for ns in resp["ns"]:
+          if ns['namespace']==_ns:
+             for err in ns["errors"]:
+                result += f"📆 <b>{err['TimeLogged']}</b> {err['Text'][0:200].replace('<','(').replace('>',')')}\n"
+       result += "\n/help /servers /s_"+cmd.split("_")[0]
+    else:
+      err, resp = get_open(url+'1')
+      print(type, resp)
+      if err.find("_OK")!=-1: # Если в статусе найден _OK в какой то там позиции
+          count = len(resp["ns"]) if "ns" in resp else 0
+          prod=""
+          if count:
+            for ns in resp["ns"]:
+              icon = "😡" if ns['counterrors'] else "😌"
+              _ns = ns['namespace'] 
+              if _ns.find('-'):
+                 _ns = _ns.replace("-","v")
+              prod += f"{icon} /s_{cmd.split('_')[0]}_{_ns} Errors:{ns['counterrors']} \n"
+          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n✅ /s_{cmd.split("_")[0]}_SYS\n{prod}'
+      else:
+          msg = "😡 Нет доступа"
+          #
+      result += f'{msg}{BR} /help'
+    return result
 

@@ -21,11 +21,12 @@ def command_help(update: Update, context: CallbackContext) -> None:
         text = static_text.start_not_created.format(first_name=u.first_name)
     text += BR+'/start: Кнопки ссылок на панель Apptools-Admin'
     text += BR+'/servers: Смотреть статус всех серверов IRIS'
+    text += BR+'/s_TEST: Смотреть продукции сервера TEST'
     text += BR
     # Это как пример для разделения по ролям пользователей
-    if "ВПР" in u.roles or "All" in u.roles:
-        text += BR+'/yesterday_vpr: Отчет за вчера по метке "ВПР"'
-    text += BR
+    #if "ВПР" in u.roles or "All" in u.roles:
+    #    text += BR+'/yesterday_vpr: Отчет за вчера по метке "ВПР"'
+    #text += BR
     text += BR+'/help: Перечень команд'
     context.bot.send_message(
         chat_id=u.user_id,

@@ -31,7 +31,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("servers", servers_iris.command_servers)) 
     # Сервера ИРИС
     dp.add_handler(
-        MessageHandler(Filters.regex(rf'^/server(/s)?.*'), broadcast_handlers.server)
+        MessageHandler(Filters.regex(rf'^/s(/s)?.*'), broadcast_handlers.server)
     )
     
     # admin commands
