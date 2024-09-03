@@ -14,10 +14,17 @@ logger = logging.getLogger(__name__)
 
 @app.task(ignore_result=True)
 def process_telegram_event(update_json):
-    print('===',update_json)
     update = Update.de_json(update_json, bot)
     dispatcher.process_update(update)
 
+@app.task(ignore_result=True)
+def process_custom_telegram_event(update_json):
+    print('--==update_json=',update_json)
+    print('--==Update=',Update)
+    print('--==bot=',bot)
+    update = Update.de_json(update_json, bot)
+    print('--==update=',update)
+    dispatcher.process_update(update)
 
 def index(request):
     return JsonResponse({"error": "sup hacker"})
