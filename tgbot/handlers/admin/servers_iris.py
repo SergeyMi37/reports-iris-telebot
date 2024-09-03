@@ -46,7 +46,9 @@ def command_servers(update: Update, context: CallbackContext) -> None:
         print(key, '=>', os.environ[key])
         #result += key.split("URL_")[1]
         #Загрузить из сервиса результат
-        err, resp = get_open(os.environ[key]+'1') # 0 - Только статус
+        _u = os.environ[key]+'1'
+        print('---url---',_u )
+        err, resp = get_open(_u) # 0 - Только статус
         print(type, resp)
         
         if err.find("_OK")!=-1:
@@ -77,7 +79,7 @@ def get_open(url: str, timeout:int = 3
   #Если не включает @, то взять всю строку, если нет, то Последнее поле по @
   _host = o.netloc if o.netloc.find("@")==-1  else  o.netloc.split("@")[-1] 
   _url = f'{o.scheme}://{_host}{o.path}'
-  print('---',_url,auth)
+  print('--get_open--',_url,auth)
   try:
       response = requests.get(_url,verify=False,headers=headers,timeout=timeout,auth=auth)
       if response.status_code == 200:
