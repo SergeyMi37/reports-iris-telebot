@@ -141,7 +141,7 @@ def command_server(cmd: str) -> None:
                 result += f"📆 <b>{err['TimeLogged']}</b> {err['Text'][0:200].replace('<','(').replace('>',')')}\n"
        result += "\n/help /servers /s_"+cmd.split("_")[0]
     else:
-      err, resp = get_open(url+'1')
+      err, resp = get_open(url=f'{url}1')
       print(err, resp)
       if err.find("_OK")!=-1: # Если в статусе найден _OK в какой то там позиции
           count = len(resp["ns"]) if "ns" in resp else 0
