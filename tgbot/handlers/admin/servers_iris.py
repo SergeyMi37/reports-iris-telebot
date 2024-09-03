@@ -39,7 +39,7 @@ def command_servers(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(static_text.only_for_admins)
         return
     telecmd, upms = get_tele_command(update)
-    #url = os.getenv('url_test20203')
+    #url = os.getenv('URL_TEST20203')
     result=''
     for key in os.environ:
       if "URL_" in key:
@@ -109,7 +109,7 @@ def command_server(cmd: str) -> None:
     Если "ИмяСервера___" выводить список продукций с количеством ошибок за 1 день
     Если "ИмяСервера_ИмяОбласти__" выводить список первых 20 ошибок с усеченным текстом
     '''
-    url = os.getenv(f'url_{cmd.split("_")[0]}')
+    url = os.getenv(f'URL_{cmd.split("_")[0]}')
     result=''
     if cmd.split("_")[2]: #если есть параметр 1
        result +=cmd

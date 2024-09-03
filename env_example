@@ -4,4 +4,4 @@ DATABASE_URL=sqlite:///db.sqlite3
 TELEGRAM_TOKEN=1725447442:testAATIAicSdePAxSxTHdbO1X_4hfAnONOyiA
 
 # Адреса серверов IRIS с Web портами для выполнения запросов к Apptools-Admin пакету /apptoolsrest/products
-url_test2 = http://UserName:UserPassword@iris-test:52773/USER #
+URL_TEST2 = http://UserName:UserPassword@iris-test:52773/USER #
