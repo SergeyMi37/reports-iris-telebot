@@ -54,8 +54,8 @@ def broadcast_custom_message(
     sleep_between: float = 0.4,
     parse_mode=telegram.ParseMode.HTML,
 ) -> None:
-    """ It's used to broadcast message to big amount of users """
-    logger.info(f"Going to send message: '{text}' to {len(user_ids)} users")
+    """ Используется для трансляции сообщений большому количеству пользователей. """
+    logger.info(f"Собираюсь отправить сообщение: '{text}' для {len(user_ids)} пользователейusers")
 
     entities_ = from_celery_entities_to_entities(entities)
     reply_markup_ = from_celery_markup_to_markup(reply_markup)
@@ -68,12 +68,12 @@ def broadcast_custom_message(
                 parse_mode=parse_mode,
                 reply_markup=reply_markup_,
             )
-            logger.info(f"Broadcast message was sent to {user_id}")
+            logger.info(f"Широковещательное сообщение было отправлено {user_id}")
         except Exception as e:
-            logger.error(f"Failed to send message to {user_id}, reason: {e}")
+            logger.error(f"Не удалось отправить сообщение {user_id}, причина: {e}")
         time.sleep(max(sleep_between, 0.1))
 
-    logger.info("Broadcast finished!")
+    logger.info("Трансляция завершена!")
 
 
 
