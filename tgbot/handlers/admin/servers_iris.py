@@ -111,15 +111,17 @@ def command_server(cmd: str) -> None:
     '''
     url = os.getenv(f'URL_{cmd.split("_")[0]}')
     result=''
-    if cmd.split("_")[2]: #если есть параметр 1
-       result +=cmd
-    elif cmd.split("_")[1]: #если есть NameSpace
+    #if cmd.split("_")[2]: #если есть параметр 1
+    #   result +=cmd
+    if cmd.split("_")[1]: #если есть NameSpace
        _ns = cmd.split("_")[1] if cmd.split("_")[1].find('-')!=-1 else cmd.split("_")[1].replace("v","-")
        if _ns=='SYS':
            _url = url.replace('/products/','/status-journal/10')
+           if cmd.split("_")[2]=='AlertsView':
+            _url = url.replace('/products/','/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all')
            err, resp = get_open(url=_url,timeout=10)
            print(err, resp)
-           result +=f'Статус:<b>{resp["status"]}</b>\n'
+           result +=f'/{cmd}\nСтатус:<b>{resp["status"]}</b>\n'
            for arr in resp["array"]:
               ic = arr['icon'] 
               if ic=='y':

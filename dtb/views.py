@@ -8,6 +8,7 @@ from dtb.celery import app
 from dtb.settings import DEBUG
 from tgbot.dispatcher import dispatcher
 from tgbot.main import bot
+from tgbot.handlers.admin.servers_iris import command_server
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +20,20 @@ def process_telegram_event(update_json):
 
 @app.task(ignore_result=True)
 def process_custom_telegram_event(update_json):
-    print('--==update_json=',update_json)
-    print('--==Update=',Update)
-    print('--==bot=',bot)
+    print('--=-= update_json =',update_json) # ТО что пришло из такска из параметра Arguments
+    if update_json["message"]["condition"]:
+        cond = update_json["message"]["condition"]
+        print('--== condition =',cond)
+        res = command_server(cond)
+        print('--== res =',res)
+        if '<b>Err</b>' in res:
+            update_json["message"]["text"] = "/s_PROD_SYS_AlertsView_На_серверах_есть_проблеммы"
+        else:
+            print('--== Команда не послана в телегу')
+            return
+           
     update = Update.de_json(update_json, bot)
-    print('--==update=',update)
+    print('--== Команда послана в телегу',update)
     dispatcher.process_update(update)
 
 def index(request):
