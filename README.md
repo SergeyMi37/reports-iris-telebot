@@ -1,8 +1,9 @@
 
-# Получение отчетов по задачам и меткам из GitLab
+# Получение отчетов по серверам IRIS и установленным продукциям по командам из телебота и выполнения регулярных задач
+
 
 ``` bash
-git clone https://github.com/SergeyMi37/reports-gitlab-telebot.git
+git clone https://github.com/SergeyMi37/reports-iris-telebot.git
 cd django-telegram-bot
 ```
 
@@ -31,12 +32,12 @@ DJANGO_DEBUG=True
 DATABASE_URL=sqlite:///db.sqlite3
 TELEGRAM_TOKEN=<PASTE YOUR TELEGRAM TOKEN HERE>
 
-# gitlab.com
-ACCESS_TOKEN = 'glpat-testJmFxugJmHAZQ43sP'
-GRAPHQL_URL = 'https://gitlab.com/api/graphql'
-GITLAB_URL = 'https://gitlab.com/api/v4/projects/2344904121/issues'
-GITLAB_LABELS = 'Теst'
-```
+# Адреса серверов IRIS с Web портами для выполнения запросов к Apptools-Admin пакету /apptoolsrest/products
+# Доступ к бд IRIS 
+
+URL_PROD = http://UserTele:UserTele02@iris:52776/apptoolsrest/products/
+URL_TEST2 = http://UserName:UserPassword@iris-test:52775/apptoolsrest/products/
+
 
 Run migrations to setup SQLite database:
 ``` bash
@@ -62,7 +63,6 @@ python manage.py runserver
 python manage.py loaddata db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude auth.user --exclude contenttypes --exclude auth.group --exclude admin.logentry --exclude sessions.session --indent 2 > db-init-param.json
-
 
 
 ## Run locally using docker-compose
