@@ -11,6 +11,8 @@ from dtb.celery import app
 from celery.utils.log import get_task_logger
 from tgbot.handlers.broadcast_message.utils import send_one_message, from_celery_entities_to_entities, \
     from_celery_markup_to_markup
+from users.models import User
+from tgbot.handlers.admin.servers_iris import command_server
 
 logger = get_task_logger(__name__)
 
@@ -59,8 +61,26 @@ def broadcast_custom_message(
 
     entities_ = from_celery_entities_to_entities(entities)
     reply_markup_ = from_celery_markup_to_markup(reply_markup)
+    print('--- user_ids ',type(user_ids),user_ids[0])
+    if 'Condition(' in user_ids[0]: # Получение условия
+        cond = user_ids[0].split('Condition(')[1].split(')')[0]
+        res = command_server(cond)
+        print('--== res =',res)
+        if '<b>Err</b>' in res: # Нужно послать сообщение пользователям
+            pass
+        else:
+            logger.info("Сообщение не послана в пользователям")
+            return
+    if 'Roles(' in user_ids[0]: # Получение пользователей по ролям
+        roles = user_ids[0].split('Roles(')[1].split(')')[0]
+        print('--- Роли ',roles)
+        #_user_ids = list(User.objects.all().values_list('user_id', flat=True))
+        # .objects.filter(is_published=False)   .filter(title__contains="питон")  objects.filter(entry__authors__name__isnull=True)
+
     for user_id in user_ids:
         try:
+            if not isinstance(user_id, int):
+                continue
             send_one_message(
                 user_id=user_id,
                 text=text,
