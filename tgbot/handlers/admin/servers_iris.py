@@ -22,6 +22,8 @@ import json
 from tgbot.handlers.admin import static_text
 from openpyxl import Workbook
 
+TIMEOUT =25
+
 def get_tele_command(update: Update) -> str:
    #print('---update:---',update)
    try:
@@ -48,7 +50,7 @@ def command_servers(update: Update, context: CallbackContext) -> None:
         #Загрузить из сервиса результат
         _u = os.environ[key]+'1'
         print('---url---',_u )
-        err, resp = get_open(_u) # 0 - Только статус
+        err, resp = get_open(url=_u,timeout=TIMEOUT) # 0 - Только статус
         print(err, resp)
         
         if err.find("_OK")!=-1:
@@ -119,7 +121,8 @@ def command_server(cmd: str) -> None:
            _url = url.replace('/products/','/status-journal/10')
            if cmd.split("_")[2]=='AlertsView':
             _url = url.replace('/products/','/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all')
-           err, resp = get_open(url=_url,timeout=10)
+          
+           err, resp = get_open(url=_url,timeout=TIMEOUT)
            print(err, resp)
            result +=f'/{cmd}\nСтатус:<b>{resp["status"]}</b>\n'
            for arr in resp["array"]:
@@ -134,7 +137,7 @@ def command_server(cmd: str) -> None:
            result += "\n/help /servers /s_"+cmd.split("_")[0]
            return result
        _url = url.replace('/products/','/productslist/')+_ns
-       err, resp = get_open(url=_url,timeout=10)
+       err, resp = get_open(url=_url,timeout=TIMEOUT)
        result +=f'Сервер: <b>{resp["server"]}</b> Область: <b>{_ns}</b>\n'
        print(err, resp)
        for ns in resp["ns"]:
@@ -143,7 +146,7 @@ def command_server(cmd: str) -> None:
                 result += f"📆 <b>{err['TimeLogged']}</b> {err['Text'][0:200].replace('<','(').replace('>',')')}\n"
        result += "\n/help /servers /s_"+cmd.split("_")[0]
     else:
-      err, resp = get_open(url=f'{url}1')
+      err, resp = get_open(url=f'{url}1',timeout=TIMEOUT)
       print(err, resp)
       if err.find("_OK")!=-1: # Если в статусе найден _OK в какой то там позиции
           count = len(resp["ns"]) if "ns" in resp else 0
@@ -155,7 +158,7 @@ def command_server(cmd: str) -> None:
               if _ns.find('-'):
                  _ns = _ns.replace("-","v")
               prod += f"{icon} /s_{cmd.split('_')[0]}_{_ns} Errors:{ns['counterrors']} \n"
-          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n✅ /s_{cmd.split("_")[0]}_SYS\n{prod}'
+          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n✅ /s_{cmd.split("_")[0]}_SYS\n✅ /s_{cmd.split("_")[0]}_SYS_AlertsView\n{prod}'
       else:
           msg = "😡 Нет доступа"
           #
