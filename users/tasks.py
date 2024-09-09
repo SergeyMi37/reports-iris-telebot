@@ -72,11 +72,16 @@ def broadcast_custom_message(
             logger.info("Сообщение не послана в пользователям")
             return
     if 'Roles(' in user_ids[0]: # Получение пользователей по ролям
-        roles = user_ids[0].split('Roles(')[1].split(')')[0]
-        print('--- Роли ',roles)
-        #_user_ids = list(User.objects.all().values_list('user_id', flat=True))
-        # .objects.filter(is_published=False)   .filter(title__contains="питон")  objects.filter(entry__authors__name__isnull=True)
-
+        roles = user_ids[0].split('Roles(')[1].split(')')[0].split(",")
+        print('--- Роли, которые должны быть у пользователей которым посылать сообщения ',roles)
+        _user_ids = list(User.objects.all().values_list('user_id', flat=True))
+        for id in _user_ids:
+            u = User.get_user_by_username_or_user_id(id)
+            _roles = u.roles.split(",")
+            if set(roles).intersection(_roles):
+                if id not in user_ids:
+                    user_ids.append(id)
+    print('--==-',user_ids)
     for user_id in user_ids:
         try:
             if not isinstance(user_id, int):
