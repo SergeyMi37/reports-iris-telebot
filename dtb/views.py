@@ -27,7 +27,7 @@ def process_custom_telegram_event(update_json):
         res = command_server(cond)
         print('--== res =',res)
         if '<b>Err</b>' in res:
-            update_json["message"]["text"] = "/s_PROD_SYS_AlertsView_На_серверах_есть_проблеммы"
+            update_json["message"]["text"] = "/s_PROD_SYS_AlertsView_На_серверах_есть_проблеммы "
         else:
             print('--== Команда не послана в телегу')
             return

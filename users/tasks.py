@@ -62,6 +62,7 @@ def broadcast_custom_message(
     entities_ = from_celery_entities_to_entities(entities)
     reply_markup_ = from_celery_markup_to_markup(reply_markup)
     print('--- user_ids ',type(user_ids),user_ids[0])
+    res = ''
     if 'Condition(' in user_ids[0]: # Получение условия
         cond = user_ids[0].split('Condition(')[1].split(')')[0]
         res = command_server(cond)
@@ -69,18 +70,18 @@ def broadcast_custom_message(
         if '<b>Err</b>' in res: # Нужно послать сообщение пользователям
             pass
         else:
-            logger.info("Сообщение не послана в пользователям")
+            logger.info("Сообщение не послано пользователям")
             return
     if 'Roles(' in user_ids[0]: # Получение пользователей по ролям
         roles = user_ids[0].split('Roles(')[1].split(')')[0].split(",")
-        print('--- Роли, которые должны быть у пользователей которым посылать сообщения ',roles)
+        print('--- Роли, которые должны быть у пользователей, которым посылать сообщения ',roles)
         _user_ids = list(User.objects.all().values_list('user_id', flat=True))
         for id in _user_ids:
             u = User.get_user_by_username_or_user_id(id)
             _roles = u.roles
             if _roles:
                 _rol = _roles.split(",")
-                if set(roles).intersection(_rol):
+                if set(roles).intersection(_rol): # Пересечение списков ролей должно быть не пустым
                     if id not in user_ids:
                         user_ids.append(id)
     print('--==-',user_ids)
@@ -90,7 +91,7 @@ def broadcast_custom_message(
                 continue
             send_one_message(
                 user_id=user_id,
-                text=text,
+                text=text + '\n' + res,
                 entities=entities_,
                 parse_mode=parse_mode,
                 reply_markup=reply_markup_,

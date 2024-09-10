@@ -124,7 +124,7 @@ def command_server(cmd: str) -> None:
           
            err, resp = get_open(url=_url,timeout=TIMEOUT)
            print(err, resp)
-           result +=f'/{cmd}\nСтатус:<b>{resp["status"]}</b>\n'
+           result +=f'/s_{cmd}\nСтатус:<b>{resp["status"]}</b>\n'
            for arr in resp["array"]:
               ic = arr['icon'] 
               if ic=='y':
