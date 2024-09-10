@@ -77,10 +77,12 @@ def broadcast_custom_message(
         _user_ids = list(User.objects.all().values_list('user_id', flat=True))
         for id in _user_ids:
             u = User.get_user_by_username_or_user_id(id)
-            _roles = u.roles.split(",")
-            if set(roles).intersection(_roles):
-                if id not in user_ids:
-                    user_ids.append(id)
+            _roles = u.roles
+            if _roles:
+                _rol = _roles.split(",")
+                if set(roles).intersection(_rol):
+                    if id not in user_ids:
+                        user_ids.append(id)
     print('--==-',user_ids)
     for user_id in user_ids:
         try:
