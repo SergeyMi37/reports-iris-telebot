@@ -114,7 +114,7 @@ def command_server(cmd: str) -> None:
     url = os.getenv(f'URL_{cmd.split("_")[0]}')
     result=''
     #if cmd.split("_")[2]: #если есть параметр 1
-    #   result +=cmd
+  
     if cmd.split("_")[1]: #если есть NameSpace
        _ns = cmd.split("_")[1] if cmd.split("_")[1].find('-')!=-1 else cmd.split("_")[1].replace("v","-")
        if _ns=='SYS':
@@ -123,18 +123,19 @@ def command_server(cmd: str) -> None:
             _url = url.replace('/products/','/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all')
           
            err, resp = get_open(url=_url,timeout=TIMEOUT)
-           print(err, resp)
-           result +=f'/s_{cmd}\nСтатус:<b>{resp["status"]}</b>\n'
-           for arr in resp["array"]:
-              ic = arr['icon'] 
-              if ic=='y':
-                ic = "😌"
-              elif ic=='r':
-                ic = "😡"
-              elif ic=='g':
-                ic = "😌"
-              result += f'{ic} {arr["text"]}\n'
-           result += "\n/help /servers /s_"+cmd.split("_")[0]
+           print('---=-',err,type(resp), resp)
+           result +=f'Статус:<b>{resp["status"]}</b>\n'
+           if resp.get("array",''):
+            for arr in resp["array"]:
+                ic = arr['icon'] 
+                if ic=='y':
+                  ic = "😌"
+                elif ic=='r':
+                  ic = "😡"
+                elif ic=='g':
+                  ic = "😌" # пока так - без ✅
+                result += f'{ic} {arr["text"]}\n'
+            result += "\n/help /servers /s_"+cmd.split("_")[0]
            return result
        _url = url.replace('/products/','/productslist/')+_ns
        err, resp = get_open(url=_url,timeout=TIMEOUT)

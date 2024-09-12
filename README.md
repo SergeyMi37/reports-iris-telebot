@@ -64,6 +64,71 @@ python manage.py loaddata db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude auth.user --exclude contenttypes --exclude auth.group --exclude admin.logentry --exclude sessions.session --indent 2 > db-init-param.json
 
+# Тестирование прикладной процедуры users.tasks.broadcast_custom_message
+# Роли, которые должны быть у пользователей которым посылать сообщения
+
+[["Roles(iris) Condition(PROD_SYS_AlertsView)",500000005],
+"Вам пришло сообщение о проблеме на сервере <b>PROD_SYS_AlertsView</b>\n команды:\n/s_PROD_SYS"
+]
+
+## Тестирование прикладной процедуры dtb.views.process_custom_telegram_event
+
+"condition":"PROD_SYS_AlertsView",  - это условие разбирается в процедуре
+http://iris:52773/apptoolsrest/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all
+
+и присваивается текст команды в телеграмм
+ "text":"/s_PROD_SYS_AlertsView",
+Если статус ответа не "OK"
+
+[
+{
+   "update_id":112321,
+   "message":{
+      "photo":[
+         
+      ],
+      "group_chat_created":false,
+      "entities":[
+         {
+            "length":60,
+            "type":"bot_command",
+            "offset":0
+         }
+      ],
+      "new_chat_members":[
+         
+      ],
+      "delete_chat_photo":false,
+      "message_id":111,
+      "supergroup_chat_created":false,
+      "text":"/s_PROD_SYS_AlertsView",
+      "condition":"PROD_SYS_AlertsView", 
+      "caption_entities":[
+         
+      ],
+      "channel_chat_created":false,
+      "new_chat_photo":[
+         
+      ],
+      "chat":{
+         "first_name":"Сергей",
+         "last_name":"Михайленко",
+         "username":"SergeyMi37",
+         "id":500000005,
+         "type":"private"
+      },
+      "date":1722593414,
+      "from":{
+         "username":"SergeyMi37",
+         "first_name":"Сергей",
+         "last_name":"Михайленко",
+         "language_code":"ru",
+         "is_bot":false,
+         "id":500000005
+      }
+   }
+}
+]
 
 ## Run locally using docker-compose
 If you want just to run all the things locally, you can use Docker-compose which will start all containers for you.
