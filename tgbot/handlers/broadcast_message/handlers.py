@@ -16,11 +16,25 @@ from tgbot.handlers.admin.reports_gitlab import put_report, get_tele_command
 from tgbot.handlers.admin.servers_iris import command_server
 import os
 
+def is_permiss(user: User,roleslist: list):
+    '''
+    Проверить права доступа по спискам ролей
+    '''
+    if user.is_superadmin:
+        return True
+    elif user.is_admin:
+        if user.roles:
+            _rol = user.roles.split(",")
+            if set(roleslist).intersection(_rol):
+                print('---',_rol)
+                return True
+    return False
+
 def server(update: Update, context: CallbackContext):
     """ Работа с серверами ИРИС """
     u = User.get_user(update, context)
     telecmd, upms = get_tele_command(update)
-    if not u.is_superadmin:
+    if not is_permiss(u,['iris']):
         upms.reply_text(
             text="В этом режиме можно работать только после одобрения Администратора",
         )
