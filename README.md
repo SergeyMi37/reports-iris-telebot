@@ -63,6 +63,15 @@ python manage.py runserver
 python manage.py loaddata db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude auth.user --exclude contenttypes --exclude auth.group --exclude admin.logentry --exclude sessions.session --indent 2 > db-init-param.json
+### Копировать бд в файл
+### https://dev-ed.ru/blog/docker-dump-restore-postgresql/
+```
+# docker-compose exec db bash
+root@9dffeccfbb11:/# pg_dump --username postgres postgres > /var/lib/postgresql/data/post-dj-iris-2024-09-12.sql
+```
+### Для инийиализации бд из файла дампа нужно поместить его директорию и прописать в yaml файле
+- ./postgresql/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+
 
 # Тестирование прикладной процедуры users.tasks.broadcast_custom_message
 # Роли, которые должны быть у пользователей которым посылать сообщения
