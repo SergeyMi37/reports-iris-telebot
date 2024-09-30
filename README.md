@@ -67,10 +67,10 @@ python manage.py dumpdata --exclude auth.permission --exclude auth.user --exclud
 ### https://dev-ed.ru/blog/docker-dump-restore-postgresql/
 ```
 # docker-compose exec postgrs bash
-root@9dffeccfbb11:/# pg_dump --username postgres postgres > /var/lib/postgresql/data/post-dj-iris-2024-09-12.sql
+root@9dffeccfbb11:/# pg_dump --username postgres postgres > /var/lib/postgresql/data/damp-2024-09-12.sql
 ```
-### Для инийиализации бд из файла дампа нужно поместить его директорию и прописать в yaml файле
-- ./postgresql/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+### Для инициализации бд из файла дампа нужно поместить его директорию и прописать в yaml файле
+- ./postgresql/damp-2024-09-12.sql:/docker-entrypoint-initdb.d/damp-2024-09-12.sql
 
 
 # Тестирование прикладной процедуры users.tasks.broadcast_custom_message
