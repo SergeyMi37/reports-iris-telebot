@@ -57,7 +57,7 @@ def broadcast_custom_message(
     parse_mode=telegram.ParseMode.HTML,
 ) -> None:
     """ Используется для трансляции сообщений большому количеству пользователей. """
-    logger.info(f"Собираюсь отправить сообщение: '{text}' для {len(user_ids)} пользователейusers")
+    logger.info(f"Собираюсь отправить сообщение: '{text}' для {len(user_ids)} пользователей users")
 
     entities_ = from_celery_entities_to_entities(entities)
     reply_markup_ = from_celery_markup_to_markup(reply_markup)

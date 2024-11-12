@@ -37,7 +37,7 @@ TELEGRAM_TOKEN=<PASTE YOUR TELEGRAM TOKEN HERE>
 
 URL_PROD = http://UserTele:UserTele02@iris:52776/apptoolsrest/products/
 URL_TEST2 = http://UserName:UserPassword@iris-test:52775/apptoolsrest/products/
-
+CC_SERPAN_TEMPVIEW = http://UserName:UserPassword@iris-test:52775/apptoolsrest/come-task/
 
 Run migrations to setup SQLite database:
 ``` bash

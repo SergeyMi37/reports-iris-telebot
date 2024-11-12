@@ -113,15 +113,39 @@ def command_server(cmd: str) -> None:
     '''
     url = os.getenv(f'URL_{cmd.split("_")[0]}')
     result=''
+    _servname = cmd.split("_")[0]
+    if not url:
+      msg = "😡 Нет сервера "+ _servname
+      result += f'{msg}{BR} /help'
+      return result
+
     #if cmd.split("_")[2]: #если есть параметр 1
   
     if cmd.split("_")[1]: #если есть NameSpace
        _ns = cmd.split("_")[1] if cmd.split("_")[1].find('-')!=-1 else cmd.split("_")[1].replace("v","-")
-       if _ns=='SYS':
+       if _ns=='CC':
+          cc = f'CC_{_servname}_{cmd.split("_")[2]}'
+          _urlcc = os.environ.get(cc, default=False)
+          if _urlcc:
+             err, resp = get_open(url=_urlcc,timeout=TIMEOUT)
+             result +=f'Статус:<b>{resp["status"]}</b>\n'
+             if resp.get("array",''):
+              for arr in resp["array"]:
+                ic = arr['icon'] 
+                if ic=='y':
+                  ic = "😌"
+                elif ic=='r':
+                  ic = "😡"
+                elif ic=='g':
+                  ic = "😌" # пока так - без ✅
+                result += f'{ic} {arr["text"]}\n'
+             return result
+
+       elif _ns=='SYS':
            _url = url.replace('/products/','/status-journal/10')
            if cmd.split("_")[2]=='AlertsView':
             _url = url.replace('/products/','/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all')
-          
+            
            err, resp = get_open(url=_url,timeout=TIMEOUT)
            print('---=-',err,type(resp), resp)
            result +=f'Статус:<b>{resp["status"]}</b>\n'
@@ -135,7 +159,7 @@ def command_server(cmd: str) -> None:
                 elif ic=='g':
                   ic = "😌" # пока так - без ✅
                 result += f'{ic} {arr["text"]}\n'
-            result += "\n/help /servers /s_"+cmd.split("_")[0]
+            result += "\n/help /servers /s_"+_servname
            return result
        _url = url.replace('/products/','/productslist/')+_ns
        err, resp = get_open(url=_url,timeout=TIMEOUT)
@@ -145,7 +169,7 @@ def command_server(cmd: str) -> None:
           if ns['namespace']==_ns:
              for err in ns["errors"]:
                 result += f"📆 <b>{err['TimeLogged']}</b> {err['Text'][0:200].replace('<','(').replace('>',')')}\n"
-       result += "\n/help /servers /s_"+cmd.split("_")[0]
+       result += "\n/help /servers /s_"+_servname
     else:
       err, resp = get_open(url=f'{url}1',timeout=TIMEOUT)
       print(err, resp)
@@ -159,10 +183,27 @@ def command_server(cmd: str) -> None:
               if _ns.find('-'):
                  _ns = _ns.replace("-","v")
               prod += f"{icon} /s_{cmd.split('_')[0]}_{_ns} Errors:{ns['counterrors']} \n"
-          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n✅ /s_{cmd.split("_")[0]}_SYS\n✅ /s_{cmd.split("_")[0]}_SYS_AlertsView\n{prod}'
+          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n✅ /s_{_servname}_SYS\n✅ /s_{_servname}_SYS_AlertsView\n{prod}'
       else:
           msg = "😡 Нет доступа"
           #
-      result += f'{msg}{BR} /help'
+      cc = get_custom_commands(_servname,'list') # прикладные команды берем из .env
+      result += f'{msg}{cc}{BR} /help'
     return result
 
+def get_custom_commands(servname: str, mode: str) -> None:
+    #url = os.getenv('CC_SERPAN_TEMP_VIEW') # CC_SERPAN_TEMP_VIEW = http://m
+    result=''
+    for key in os.environ:
+      if f"CC_{servname}_" in key:
+        print(key, '=>', os.environ[key])
+        if mode=="list":
+          result += f'👉 /s_{servname}_CC_{key.split("_")[2]}\n'
+        else:
+          #result += key.split("URL_")[1]
+          #Загрузить из сервиса результат
+          _u = os.environ[key]
+          print('-url-',_u )
+          err, resp = get_open(url=_u,timeout=TIMEOUT) # 0 - Только статус
+          print(err, resp)
+    return result
