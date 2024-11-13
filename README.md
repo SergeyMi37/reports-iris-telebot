@@ -63,15 +63,20 @@ python manage.py runserver
 python manage.py loaddata db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > db-init-param.json
 python manage.py dumpdata --exclude auth.permission --exclude auth.user --exclude contenttypes --exclude auth.group --exclude admin.logentry --exclude sessions.session --indent 2 > db-init-param.json
-### Копировать бд в файл
-### https://dev-ed.ru/blog/docker-dump-restore-postgresql/
+# Копировать бд в файл
+## https://dev-ed.ru/blog/docker-dump-restore-postgresql/
 ```
-# docker-compose exec postgrs bash
-root@9dffeccfbb11:/# pg_dump --username postgres postgres > /var/lib/postgresql/data/damp-2024-09-12.sql
+docker-compose exec db bash
+root@9dffeccfbb11:/# pg_dump --username postgres dbname > /var/lib/postgresql/data/dump-2024-09-12.sql
 ```
-### Для инициализации бд из файла дампа нужно поместить его в директорию и прописать в yaml файле
-- ./postgresql/damp-2024-09-12.sql:/docker-entrypoint-initdb.d/damp-2024-09-12.sql
+## Для инициализации бд из файла дампа нужно поместить его в директорию и прописать в yaml файле
+- ./postgresql/dump-2024-09-12.sql:/docker-entrypoint-initdb.d/dump-2024-09-12.sql
 
+## Для восстановления бд из файла дампа нужно выполнить команду
+```
+docker-compose exec db bash
+root@9dffeccfbb11:/# psql -U postgres -d dbname -f /var/lib/postgresql/data/damp-2024-10-09.sql
+```
 
 # Тестирование прикладной процедуры users.tasks.broadcast_custom_message
 # Роли, которые должны быть у пользователей которым посылать сообщения
