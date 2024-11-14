@@ -45,13 +45,13 @@ def command_servers(update: Update, context: CallbackContext) -> None:
     result=''
     for key in os.environ:
       if "URL_" in key:
-        print(key, '=>', os.environ[key])
+        #print(key, '=>', os.environ[key])
         #result += key.split("URL_")[1]
         #Загрузить из сервиса результат
         _u = os.environ[key]+'1'
-        print('---url---',_u )
+        #print('---url---',_u )
         err, resp = get_open(url=_u,timeout=TIMEOUT) # 0 - Только статус
-        print(err, resp)
+        #print(err, resp)
         
         if err.find("_OK")!=-1:
            icon = "😌 /" 
@@ -81,7 +81,7 @@ def get_open(url: str, timeout:int = 3
   #Если не включает @, то взять всю строку, если нет, то Последнее поле по @
   _host = o.netloc if o.netloc.find("@")==-1  else  o.netloc.split("@")[-1] 
   _url = f'{o.scheme}://{_host}{o.path}'
-  print('--get_open--',_url,auth)
+  #print('--get_open--',_url,auth)
   try:
       response = requests.get(_url,verify=False,headers=headers,timeout=timeout,auth=auth)
       if response.status_code == 200:
@@ -128,6 +128,7 @@ def command_server(cmd: str) -> None:
           _urlcc = os.environ.get(cc, default=False)
           if _urlcc:
              err, resp = get_open(url=_urlcc,timeout=TIMEOUT)
+             print('---=-',err,type(resp), resp)
              result +=f'Статус:<b>{resp["status"]}</b>\n'
              if resp.get("array",''):
               for arr in resp["array"]:
@@ -139,6 +140,7 @@ def command_server(cmd: str) -> None:
                 elif ic=='g':
                   ic = "😌" # пока так - без ✅
                 result += f'{ic} {arr["text"]}\n'
+             result += "\n/help /servers /s_"+_servname
              return result
 
        elif _ns=='SYS':
@@ -147,7 +149,7 @@ def command_server(cmd: str) -> None:
             _url = url.replace('/products/','/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all')
             
            err, resp = get_open(url=_url,timeout=TIMEOUT)
-           print('---=-',err,type(resp), resp)
+           #print('---=-',err,type(resp), resp)
            result +=f'Статус:<b>{resp["status"]}</b>\n'
            if resp.get("array",''):
             for arr in resp["array"]:
@@ -164,7 +166,7 @@ def command_server(cmd: str) -> None:
        _url = url.replace('/products/','/productslist/')+_ns
        err, resp = get_open(url=_url,timeout=TIMEOUT)
        result +=f'Сервер: <b>{resp["server"]}</b> Область: <b>{_ns}</b>\n'
-       print(err, resp)
+       #print(err, resp)
        for ns in resp["ns"]:
           if ns['namespace']==_ns:
              for err in ns["errors"]:
@@ -172,7 +174,7 @@ def command_server(cmd: str) -> None:
        result += "\n/help /servers /s_"+_servname
     else:
       err, resp = get_open(url=f'{url}1',timeout=TIMEOUT)
-      print(err, resp)
+      #print(err, resp)
       if err.find("_OK")!=-1: # Если в статусе найден _OK в какой то там позиции
           count = len(resp["ns"]) if "ns" in resp else 0
           prod=""
@@ -198,7 +200,7 @@ def get_custom_commands(servname: str, mode: str) -> None:
       if f"CC_{servname}_" in key:
         print(key, '=>', os.environ[key])
         if mode=="list":
-          result += f'👉 /s_{servname}_CC_{key.split("_")[2]}\n'
+          result += f'✨ /s_{servname}_CC_{key.split("_")[2]}\n' #👉
         else:
           #result += key.split("URL_")[1]
           #Загрузить из сервиса результат
