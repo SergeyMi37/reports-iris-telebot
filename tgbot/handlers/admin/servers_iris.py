@@ -51,14 +51,14 @@ def command_servers(update: Update, context: CallbackContext) -> None:
         _u = os.environ[key]+'1'
         #print('---url---',_u )
         err, resp = get_open(url=_u,timeout=TIMEOUT) # 0 - Только статус
-        #print(err, resp)
+        #print(err, resp) #   🟢 🟡 🟠 🔵 🟣 ⚪️ 🔴 🟤
         
         if err.find("_OK")!=-1:
-           icon = "😌 /" 
+           icon = "🟡 /" 
            count = len(resp["ns"]) if "ns" in resp else 0
            msg= f'<b>{resp["server"]}</b> Продукций: {count}'
         else:
-           icon = "😡 "
+           icon = "🔴 "
            msg = "Нет доступа"
         #
         result += f'{icon}s_{key.split("URL_")[1]} {msg}{BR}'
@@ -115,7 +115,7 @@ def command_server(cmd: str) -> None:
     result=''
     _servname = cmd.split("_")[0]
     if not url:
-      msg = "😡 Нет сервера "+ _servname
+      msg = "🔴 Нет сервера "+ _servname
       result += f'{msg}{BR} /help'
       return result
 
@@ -134,11 +134,11 @@ def command_server(cmd: str) -> None:
               for arr in resp["array"]:
                 ic = arr['icon'] 
                 if ic=='y':
-                  ic = "😌"
+                  ic = "🟡"
                 elif ic=='r':
-                  ic = "😡"
+                  ic = "🔴"
                 elif ic=='g':
-                  ic = "😌" # пока так - без ✅
+                  ic = "🟢" # пока так - без ✅
                 result += f'{ic} {arr["text"]}\n'
              result += "\n/help /servers /s_"+_servname
              return result
@@ -155,11 +155,11 @@ def command_server(cmd: str) -> None:
             for arr in resp["array"]:
                 ic = arr['icon'] 
                 if ic=='y':
-                  ic = "😌"
+                  ic = "🟡"
                 elif ic=='r':
-                  ic = "😡"
+                  ic = "🔴"
                 elif ic=='g':
-                  ic = "😌" # пока так - без ✅
+                  ic = "🟢" # пока так - без ✅
                 result += f'{ic} {arr["text"]}\n'
             result += "\n/help /servers /s_"+_servname
            return result
@@ -180,14 +180,14 @@ def command_server(cmd: str) -> None:
           prod=""
           if count:
             for ns in resp["ns"]:
-              icon = "😡" if ns['counterrors'] else "😌"
+              icon = "🔴" if ns['counterrors'] else "🟡"
               _ns = ns['namespace'] 
               if _ns.find('-'):
                  _ns = _ns.replace("-","v")
               prod += f"{icon} /s_{cmd.split('_')[0]}_{_ns} Errors:{ns['counterrors']} \n"
-          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n✅ /s_{_servname}_SYS\n✅ /s_{_servname}_SYS_AlertsView\n{prod}'
+          msg= f'<b>{resp["server"]}</b>, Продукций: {count}, Ошибок за 3 дня\n🟢 /s_{_servname}_SYS\n🟢 /s_{_servname}_SYS_AlertsView\n{prod}'
       else:
-          msg = "😡 Нет доступа"
+          msg = "🔴 Нет доступа"
           #
       cc = get_custom_commands(_servname,'list') # прикладные команды берем из .env
       result += f'{msg}{cc}{BR} /help'
