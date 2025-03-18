@@ -67,12 +67,12 @@ def broadcast_custom_message(
         cond = user_ids[0].split('Condition(')[1].split(')')[0]
         res = command_server(cond)
         print('--== res =',res)
-        if '<b>Err</b>' in res: # Нужно послать сообщение пользователям
+        if '<b>Error</b>' in res: # Нужно послать сообщение пользователям в  следующим блоке
             pass
         else:
             logger.info("Сообщение не послано пользователям")
             return
-    if 'Roles(' in user_ids[0]: # Получение пользователей по ролям
+    if 'Roles(' in user_ids[0]: # Получение пользователей по ролям, чтоб послать сообщение
         roles = user_ids[0].split('Roles(')[1].split(')')[0].split(",")
         print('--- Роли, которые должны быть у пользователей, которым посылать сообщения ',roles)
         _user_ids = list(User.objects.all().values_list('user_id', flat=True))

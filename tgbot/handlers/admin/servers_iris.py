@@ -138,7 +138,7 @@ def command_server(cmd: str) -> None:
                 elif ic=='r':
                   ic = "🔴"
                 elif ic=='g':
-                  ic = "🟢" # пока так - без ✅
+                  ic = "⚪️" # пока так - без ✅
                 result += f'{ic} {arr["text"]}\n'
              result += "\n/help /servers /s_"+_servname
              return result
@@ -149,7 +149,7 @@ def command_server(cmd: str) -> None:
             _url = url.replace('/products/','/custom-task/user/run&class=apptools.MVK.utl&met=GetMetrixOneServer&par=all')
             
            err, resp = get_open(url=_url,timeout=TIMEOUT)
-           #print('---=-',err,type(resp), resp)
+           print('---=-',_url, err,type(resp), resp)
            result +=f'Статус:<b>{resp["status"]}</b>\n'
            if resp.get("array",''):
             for arr in resp["array"]:
@@ -159,9 +159,10 @@ def command_server(cmd: str) -> None:
                 elif ic=='r':
                   ic = "🔴"
                 elif ic=='g':
-                  ic = "🟢" # пока так - без ✅
+                  ic = "⚪️" # пока так - без ✅
                 result += f'{ic} {arr["text"]}\n'
             result += "\n/help /servers /s_"+_servname
+            print('---===-',result)
            return result
        _url = url.replace('/products/','/productslist/')+_ns
        err, resp = get_open(url=_url,timeout=TIMEOUT)
